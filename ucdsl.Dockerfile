@@ -1,6 +1,6 @@
-ARG TARGETARCH
-
 FROM ubuntu:24.04
+
+ARG TARGETARCH
 
 RUN useradd -ms /bin/bash primary
 USER root
@@ -30,10 +30,10 @@ RUN opam pin -y why3 1.8.2
 # Setup the SMT solvers
 RUN opam pin -y alt-ergo 2.6.0
 USER root
-RUN if [ "$TARGETARCH" = "amd64" ]; then \
-        cd /opt && wget https://github.com/Z3Prover/z3/releases/download/z3-4.15.3/z3-4.15.3-arm64-glibc-2.34.zip && unzip z3-4.15.3-arm64-glibc-2.34.zip && ln -s /opt/z3-4.15.3-arm64-glibc-2.34/bin/z3 /usr/bin/z3 && rm /opt/z3-4.15.3-arm64-glibc-2.34.zip && cd /; \
+RUN if [ "$TARGETARCH" = "arm64" ]; then \
+        cd /opt && wget https://github.com/Z3Prover/z3/releases/download/z3-4.15.3/z3-4.15.3-arm64-glibc-2.34.zip && unzip z3-4.15.3-arm64-glibc-2.34.zip && ln -s /opt/z3-4.15.3-arm64-glibc-2.34/bin/z3 /usr/bin/z3 && cd /; \
     else \
-        cd /opt && wget https://github.com/Z3Prover/z3/releases/download/z3-4.15.3/z3-4.15.3-x64-glibc-2.39.zip && unzip z3-4.15.3-x64-glibc-2.39.zip && ln -s /opt/z3-4.15.3-x64-glibc-2.39/bin/z3 /usr/bin/z3 && rm /opt/z3-4.15.3-x64-glibc-2.39.zip && cd /; \
+        cd /opt && wget https://github.com/Z3Prover/z3/releases/download/z3-4.15.3/z3-4.15.3-x64-glibc-2.39.zip && unzip z3-4.15.3-x64-glibc-2.39.zip && ln -s /opt/z3-4.15.3-x64-glibc-2.39/bin/z3 /usr/bin/z3 && cd /; \
     fi
 
 USER primary
