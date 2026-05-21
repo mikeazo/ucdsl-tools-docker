@@ -69,18 +69,12 @@ if [[ "$mode" == "cli" ]] ; then
 elif [[ "$mode" == "gui" ]] ; then
     code_dst="/home/headless/srcfiles"
     incl_dst="/home/headless/includes"
-    echo "To make the Docker volumes writeable, you need to have sudo access."
-    echo -n "Do you have sudo access and wish to change the permissions on the volumes? [y/N]: " && read -r resp
-    test "$resp" = "y" && sudo chown -R "$(id -u):$(id -g)" ${code_volume_src}
-    test "$resp" = "y" && test "$incl_volume_src" != "UNSET" && sudo chown -R "$(id -u):$(id -g)" ${incl_volume_src}
     test "$incl_volume_src" == "UNSET" && incl_vol="" || incl_vol="-v $incl_volume_src:$incl_dst"
-    docker build --build-arg SUDO=$resp -t ucdsl-tools-gui -f ucdsl-gui.Dockerfile . || exit $?
+    docker build -t ucdsl-tools-gui -f ucdsl-gui.Dockerfile . || exit $?
     echo "To connect to the GUI, open your web browser to http://localhost:36901/vnc.html?password=headless"
     docker run --rm --name ucdsl-gui -v "$code_volume_src:$code_dst" \
         $incl_vol -p "36901:6901" -p "35901:5901" ucdsl-tools-gui /bin/bash \
         || echo "Error code $? occurred during run" >&2
-    test "$resp" == "y" && sudo chown -R "$(id -g):$(id -u)" ${code_volume_src}
-    test "$resp" = "y" && test "$incl_volume_src" != "UNSET" && sudo chown -R "$(id -g):$(id -u)" ${incl_volume_src}
 fi
 
 echo "End of launch script"

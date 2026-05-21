@@ -46,10 +46,6 @@ Finally, assuming you are creating new volumes (and not selecting existing ones)
 
 Once all these steps are completed, the appropriate Docker image will be built and run automatically. To terminate the script at any time, press `Ctrl-C`. Post-run cleanup will occur automatically.
 
-## Fixing Volumes in GUI Mode
-
-Due to some unavoidable nuances in the VNC Docker image design, without these extra steps you will not have write-access to either of the bind mounts added to GUI mode. First off, you will need `sudo` access on the host (VM, WSL2, or other Linux machine). If you do have `sudo` and want the volumes to be writeable, type `y` at the prompt `Do you have sudo access and wish to change the permissions on the volumes? [y/N]: ` and type in your `sudo` password. Once these are complete, any changes you make to the `srcfiles` and `includes` will be reflected on the host machine.
-
 ## Notes and Troubleshooting
 
 ### UCI Script Output

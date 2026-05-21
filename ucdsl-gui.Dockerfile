@@ -50,12 +50,6 @@ RUN cd ~ && git clone https://github.com/easyuc/EasyUC.git && cd EasyUC/uc-dsl/ 
 
 # Setup Emacs
 COPY emacs /home/headless/.emacs
-COPY alias_cmds.sh /home/headless/alias_cmds.sh
-USER root
-RUN chmod +x /home/headless/alias_cmds.sh
-RUN chown headless:headless /home/headless/alias_cmds.sh
-RUN chown headless:headless /home/headless/.emacs && cp /home/headless/EasyUC/uc-dsl/emacs/ucdsl-mode.el /usr/share/emacs/site-lisp/
-USER headless
 WORKDIR "/home/headless"
 RUN emacs --batch --eval "(progn (package-refresh-contents) (package-install 'proof-general))"
 RUN pgdir="$(find /home/headless/.emacs.d/elpa/proof-general-*.[!a-z]* -maxdepth 0 -print -quit | tr -d '\n ')" && echo "$pgdir" > ~/.pgdir
@@ -67,9 +61,5 @@ RUN mkdir srcfiles && mkdir includes
 
 # Setup the environment
 RUN opam env >> /home/headless/.bashrc
-
-# Add the alias script to the .profile
-RUN if [ $SUDO = 'y' ] ; then echo "/home/headless/alias_cmds.sh" >> /home/headless/.profile ; fi
-RUN if [ $SUDO = 'y' ] ; then echo ". ~/.profile" > /home/headless/.xsessionrc ; fi
 
 # Run
