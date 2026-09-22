@@ -11,7 +11,7 @@ RUN apt-get update && apt-get upgrade -y
 WORKDIR /root
 
 # Setup the dependencies
-RUN apt-get install autoconf pkgconf ocaml ocaml-native-compilers camlp4-extra opam libgmp-dev libpcre2-dev pkg-config zlib1g-dev -y
+RUN apt-get install autoconf pkgconf ocaml ocaml-native-compilers camlp4-extra opam libgmp-dev libpcre2-dev pkg-config zlib1g-dev libmpfr-dev -y
 
 USER primary
 WORKDIR /home/primary
@@ -28,7 +28,7 @@ RUN opam switch create 5.4.1 && eval $(opam env) && opam pin -yn add easycrypt h
 RUN opam pin -y why3 1.8.2
 
 # Setup the SMT solvers
-RUN opam pin -y alt-ergo 2.6.0
+RUN opam pin -y alt-ergo 2.6.3
 USER root
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
         cd /opt && wget https://github.com/Z3Prover/z3/releases/download/z3-4.15.3/z3-4.15.3-arm64-glibc-2.34.zip && unzip z3-4.15.3-arm64-glibc-2.34.zip && ln -s /opt/z3-4.15.3-arm64-glibc-2.34/bin/z3 /usr/bin/z3 && cd /; \
