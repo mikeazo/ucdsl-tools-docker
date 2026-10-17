@@ -6,6 +6,17 @@
 
 To build the image run `docker build -t ucdsl-tools -f ucdsl.Dockerfile .` from inside the cloned repository.
 
+## CI/CD (Automatic Docker Hub Builds)
+
+This repository has a GitHub Actions workflow (`.github/workflows/docker-build-and-push.yml`) that automatically builds and pushes images to Docker Hub on every push:
+
+- `ucdsl.Dockerfile` is built for both `linux/amd64` and `linux/arm64` and pushed as a multi-arch manifest to `${DOCKERHUB_USERNAME}/ucdsl-tools`.
+- `ucdsl-gui.Dockerfile` is built for `linux/amd64` only and pushed to `${DOCKERHUB_USERNAME}/ucdsl-tools-gui`.
+
+Each push produces both a `latest` tag and an immutable `sha-<commit>` tag. The workflow authenticates to Docker Hub using the `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` repository secrets. Pull the images with, for example:
+
+`docker pull <dockerhub-username>/ucdsl-tools:latest`
+
 ### Running UC DSL files
 
 The best way to run UC DSL files in this docker image is to mount a local folder into the container and run the right commands to execute the UC DSL tools (via the `ucdsl` command).
