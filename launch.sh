@@ -6,6 +6,23 @@ echo "Launch Dockerized UC-DSL tools"
 echo "Available launch modes: cli, gui"
 echo -n "Select a mode: " && read -r mode
 
+DOCKERHUB_USER="mikeazo"
+
+# Ask whether to pull the hosted image from Docker Hub (matching the host
+# architecture automatically for multi-arch images) or to build locally.
+prepare_image() {
+    local local_name="$1"
+    local dockerfile="$2"
+    echo -n "Pull '${DOCKERHUB_USER}/${local_name}:latest' from Docker Hub, or build locally? [p/B] " && read -r src_choice
+    if [[ "$src_choice" == "p" || "$src_choice" == "P" ]] ; then
+        docker pull "${DOCKERHUB_USER}/${local_name}:latest" || exit $?
+        docker tag "${DOCKERHUB_USER}/${local_name}:latest" "$local_name" || exit $?
+        echo "Pulled ${DOCKERHUB_USER}/${local_name}:latest (architecture selected automatically by Docker)."
+    else
+        docker build -t "$local_name" -f "$dockerfile" . || exit $?
+    fi
+}
+
 echo "Setup Volumes"
 
 cd ./configvolumes
@@ -50,7 +67,7 @@ if [[ "$mode" == "cli" ]] ; then
     incl_dst="/host/includes"
     test "$incl_volume_src" == "UNSET" && incl_folder="" || incl_folder="-I $incl_dst"
     test "$incl_volume_src" == "UNSET" && incl_vol="" || incl_vol="-v $incl_volume_src:$incl_dst"
-    docker build -t ucdsl-tools -f ucdsl.Dockerfile . || exit $?
+    prepare_image ucdsl-tools ucdsl.Dockerfile
     docker run --rm -v "$code_volume_src:$code_dst" \
         $incl_vol -d -i -t --name ucdsl-cli ucdsl-tools /bin/bash || exit $?
     keep_running="y"
@@ -70,7 +87,7 @@ elif [[ "$mode" == "gui" ]] ; then
     code_dst="/home/headless/srcfiles"
     incl_dst="/home/headless/includes"
     test "$incl_volume_src" == "UNSET" && incl_vol="" || incl_vol="-v $incl_volume_src:$incl_dst"
-    docker build -t ucdsl-tools-gui -f ucdsl-gui.Dockerfile . || exit $?
+    prepare_image ucdsl-tools-gui ucdsl-gui.Dockerfile
     echo "To connect to the GUI, open your web browser to http://localhost:36901/vnc.html?password=headless"
     docker run --rm --name ucdsl-gui -v "$code_volume_src:$code_dst" \
         $incl_vol -p "36901:6901" -p "35901:5901" ucdsl-tools-gui /bin/bash \
