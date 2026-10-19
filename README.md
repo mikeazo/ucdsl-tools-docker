@@ -40,9 +40,9 @@ The default password for the VNC connection is *headless*.
 
 ## Usage with (New) Convenience Script
 
-There is a new convenience script (`launch.sh`) that will assist in launching either the CLI or GUI version of the tool, even setting up volumes interactively. To start the script, simply run `./launch.sh` from a `Bash` terminal. Then follow the prompts as described below.
+There is a convenience script (`launch.sh`) that launches either the CLI or GUI version of the tool and can set up volume aliases interactively. To start the guided workflow, run `./launch.sh` from a Bash terminal and follow the prompts below.
 
-* Prompt: `Available launch modes: cli, gui` `Select a mode: `
+* Prompt: `Select a mode (cli or gui): `
   * Type `cli` for the command-line interface or `gui` for VNC GUI and press enter.
 * Prompt: `Select sourcecode volume from list or enter a new absolute path to bind: `
   * See next section for a detailed explanation.
@@ -56,6 +56,39 @@ Next you will see the prompt `Select includes volume from list or enter a new ab
 Finally, assuming you are creating new volumes (and not selecting existing ones), you will also get prompted to give a name for each volume with `Enter a unique name for the [sourcecode/includes] volume: `. This name must not have any special characters or spaces (other than `-` or `_`). For example, if the volume path is `/home/myuser/gitrepo/UCI-Scripts`, you could name your volume `uci_scripts`, but **NOT** `gitrepo/uci_scripts`. These names will be used to select your volumes in future runs of the launch script on your system.
 
 Once all these steps are completed, the appropriate Docker image will be built and run automatically. To terminate the script at any time, press `Ctrl-C`. Post-run cleanup will occur automatically.
+
+### Scripted launches
+
+The same workflow can be used without prompts. Use a saved alias or an absolute
+path for `--source` and `--includes`; use `none` when no includes mount is
+needed. A new absolute path must be paired with `--source-name` or
+`--includes-name` so it can be saved for future runs.
+
+```bash
+./launch.sh --non-interactive --mode gui \
+  --source uci_scripts --includes easycrypt_prelude \
+  --image-source pull
+```
+
+For a first-time path, for example:
+
+```bash
+./launch.sh --non-interactive --mode gui \
+  --source /absolute/path/to/UCI-Scripts --source-name uci_scripts \
+  --includes none --image-source build
+```
+
+For a non-interactive CLI run, also provide the top-level UCI filename:
+
+```bash
+./launch.sh --non-interactive --mode cli \
+  --source uci_scripts --includes easycrypt_prelude \
+  --image-source pull --uci protocol.uci
+```
+
+Run `./launch.sh --help` for the complete list of options. Pulls use the
+`mikeazo` Docker Hub namespace by default; set `DOCKERHUB_USER` or pass
+`--dockerhub-user` to use a different namespace.
 
 ## Notes and Troubleshooting
 

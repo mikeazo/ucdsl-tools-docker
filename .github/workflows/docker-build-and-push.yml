@@ -8,9 +8,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  shell-validation:
+    name: Shell Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shell tooling
+        run: sudo apt-get update && sudo apt-get install -y bats shellcheck
+      - name: Lint shell scripts
+        run: shellcheck launch.sh lib/launch_lib.sh
+      - name: Run launch-script tests
+        run: bats test/launch.bats
+
   build-and-push-cli:
     name: Build and push ucdsl (arm64 + amd64)
     runs-on: ubuntu-latest
+    needs: shell-validation
     permissions:
       contents: read
     steps:
@@ -51,6 +64,7 @@ jobs:
   build-and-push-gui:
     name: Build and push ucdsl-gui (amd64)
     runs-on: ubuntu-latest
+    needs: shell-validation
     permissions:
       contents: read
     steps:
