@@ -353,7 +353,7 @@ run_cli() {
 
     printf 'All UCI files in volume:\n'
     (
-        cd "$RESOLVED_SOURCE"
+        cd "$RESOLVED_SOURCE" || exit 1
         shopt -s nullglob
         printf '%s\n' *.uci
     )
