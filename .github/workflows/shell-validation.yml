@@ -1,0 +1,30 @@
+name: Shell Validation
+
+on:
+  push:
+    paths:
+      - launch.sh
+      - lib/**
+      - test/**
+      - .github/workflows/shell-validation.yml
+  pull_request:
+    paths:
+      - launch.sh
+      - lib/**
+      - test/**
+      - .github/workflows/shell-validation.yml
+  workflow_dispatch:
+
+jobs:
+  shell-validation:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shell tooling
+        run: sudo apt-get update && sudo apt-get install -y bats shellcheck
+      - name: Lint shell scripts
+        run: shellcheck launch.sh lib/launch_lib.sh
+      - name: Run launch-script tests
+        run: bats test/launch.bats

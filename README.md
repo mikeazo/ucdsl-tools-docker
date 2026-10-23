@@ -8,12 +8,12 @@ To build the image run `docker build -t ucdsl-tools -f ucdsl.Dockerfile .` from 
 
 ## CI/CD (Automatic Docker Hub Builds)
 
-This repository has a GitHub Actions workflow (`.github/workflows/docker-build-and-push.yml`) that automatically builds and pushes images to Docker Hub on every push:
+This repository has a GitHub Actions workflow (`.github/workflows/docker-build-and-push.yml`) that automatically builds and pushes images to Docker Hub when an image input changes on `main`. It can also be started manually from the Actions page:
 
-- `ucdsl.Dockerfile` is built for both `linux/amd64` and `linux/arm64` and pushed as a multi-arch manifest to `${DOCKERHUB_USERNAME}/ucdsl-tools`.
+- `ucdsl.Dockerfile` is built independently for `linux/amd64` and `linux/arm64`, then published as a multi-arch manifest to `${DOCKERHUB_USERNAME}/ucdsl-tools`.
 - `ucdsl-gui.Dockerfile` is built for `linux/amd64` only and pushed to `${DOCKERHUB_USERNAME}/ucdsl-tools-gui`.
 
-Each push produces both a `latest` tag and an immutable `sha-<commit>` tag. The workflow authenticates to Docker Hub using the `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` repository secrets. Pull the images with, for example:
+The ARM build runs on a native GitHub-hosted ARM runner rather than under QEMU emulation. Each image/platform keeps a separate BuildKit cache in Docker Hub, avoiding GitHub Actions' small shared cache. Each image update produces both a `latest` tag and an immutable `sha-<commit>` tag. The workflow authenticates to Docker Hub using the `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` repository secrets. Pull the images with, for example:
 
 `docker pull <dockerhub-username>/ucdsl-tools:latest`
 
