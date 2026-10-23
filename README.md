@@ -17,6 +17,8 @@ The ARM build runs on a native GitHub-hosted ARM runner rather than under QEMU e
 
 `docker pull <dockerhub-username>/ucdsl-tools:latest`
 
+Both Dockerfiles check out the immutable EasyUC revision in [`easyuc.lock`](easyuc.lock). To deliberately upgrade EasyUC, replace that full commit SHA and commit the lock-file change; it will trigger a new image build while retaining the cached toolchain layers.
+
 ### Running UC DSL files
 
 The best way to run UC DSL files in this docker image is to mount a local folder into the container and run the right commands to execute the UC DSL tools (via the `ucdsl` command).

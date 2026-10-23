@@ -46,7 +46,11 @@ RUN opam install -y easycrypt && eval $(opam env) && easycrypt why3config
 RUN opam install -y bisect_ppx --update-invariant
 
 # Setup UC-DSL
-RUN cd ~ && git clone https://github.com/easyuc/EasyUC.git && cd EasyUC/uc-dsl/ && eval $(opam env) && echo "/home/primary/.opam/5.4.1/lib/easycrypt/theories" | ./configure && ./build && ./install-opam 
+COPY easyuc.lock /usr/local/share/easyuc.lock
+RUN easyuc_ref="$(tr -d '\r\n' < /usr/local/share/easyuc.lock)" && \
+    cd ~ && git clone https://github.com/easyuc/EasyUC.git && cd EasyUC && \
+    git checkout --detach "$easyuc_ref" && cd uc-dsl/ && \
+    eval $(opam env) && echo "/home/primary/.opam/5.4.1/lib/easycrypt/theories" | ./configure && ./build && ./install-opam
 
 # Setup the environment
 RUN opam env --inplace-path >> /home/primary/.profile
