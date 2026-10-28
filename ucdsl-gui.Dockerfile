@@ -25,7 +25,7 @@ RUN opam install -y dune batteries
 RUN opam switch create 5.4.1 && eval $(opam env) && opam pin -yn add easycrypt https://github.com/EasyCrypt/easycrypt.git && opam install -y --deps-only easycrypt && eval $(opam env)
 
 # Install why3
-RUN opam pin -y why3 1.8.2
+RUN opam pin -y why3 1.9.0
 
 # Setup the SMT solvers
 RUN opam pin -y alt-ergo 2.6.3
