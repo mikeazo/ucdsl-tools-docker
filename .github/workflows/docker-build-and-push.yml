@@ -7,6 +7,7 @@ on:
     paths:
       - ucdsl.Dockerfile
       - ucdsl-gui.Dockerfile
+      - easycrypt.lock
       - easyuc.lock
       - emacs
       - .github/workflows/docker-build-and-push.yml

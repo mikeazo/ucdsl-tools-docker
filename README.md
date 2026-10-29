@@ -17,7 +17,7 @@ The ARM build runs on a native GitHub-hosted ARM runner rather than under QEMU e
 
 `docker pull <dockerhub-username>/ucdsl-tools:latest`
 
-Both Dockerfiles check out the immutable EasyUC revision in [`easyuc.lock`](easyuc.lock). To deliberately upgrade EasyUC, replace that full commit SHA and commit the lock-file change; it will trigger a new image build while retaining the cached toolchain layers.
+Both Dockerfiles use immutable EasyCrypt and EasyUC revisions in [`easycrypt.lock`](easycrypt.lock) and [`easyuc.lock`](easyuc.lock). To deliberately upgrade either dependency, replace its full commit SHA and commit the lock-file change; it will trigger a new image build while retaining the cached toolchain layers.
 
 ### Running UC DSL files
 

@@ -22,7 +22,11 @@ RUN opam init --verbose -y && eval $(opam env)
 RUN opam install -y dune batteries
 
 # Setup Easycrypt
-RUN opam switch create 5.4.1 && eval $(opam env) && opam pin -yn add easycrypt https://github.com/EasyCrypt/easycrypt.git && opam install -y --deps-only easycrypt && eval $(opam env)
+COPY easycrypt.lock /usr/local/share/easycrypt.lock
+RUN easycrypt_ref="$(tr -d '\r\n' < /usr/local/share/easycrypt.lock)" && \
+    opam switch create 5.4.1 && eval $(opam env) && \
+    opam pin -yn add easycrypt "https://github.com/EasyCrypt/easycrypt.git#${easycrypt_ref}" && \
+    opam install -y --deps-only easycrypt && eval $(opam env)
 
 # Install why3
 RUN opam pin -y why3 1.9.0
