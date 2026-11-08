@@ -29,7 +29,7 @@ RUN easycrypt_ref="$(tr -d '\r\n' < /usr/local/share/easycrypt.lock)" && \
     opam install -y --deps-only easycrypt && eval $(opam env)
 
 # Install why3
-RUN opam pin -y why3 1.8.2
+RUN opam pin -y why3 1.9.0
 
 # Setup the SMT solvers
 RUN opam pin -y alt-ergo 2.6.3
